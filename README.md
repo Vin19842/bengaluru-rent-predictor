@@ -1,5 +1,7 @@
 # Bengaluru Rent Estimator
 
+**Project on GitHub:** [Vin19842/bengaluru-rent-predictor](https://github.com/Vin19842/bengaluru-rent-predictor)  
+**Trained model:** [Download the model file](https://github.com/Vin19842/bengaluru-rent-predictor/blob/main/models/bengaluru_rent_model.joblib)  
 **Live app:** _Not deployed yet — add the Streamlit Community Cloud URL here after deployment._
 
 An end-to-end beginner project that predicts a Bengaluru home's monthly advertised rent from its size, BHK, bathrooms, locality and listing characteristics. It includes a repeatable training script, a saved trained model, evaluation metrics and an interactive Streamlit app. The original CSV is kept out of Git because its source listing does not state a redistribution license; see [`data/README.md`](data/README.md) for how to obtain it for retraining.
