@@ -4,7 +4,7 @@
 **Trained model:** [Download the model file](https://github.com/Vin19842/bengaluru-rent-predictor/blob/main/models/bengaluru_rent_model.joblib)  
 **Live app:** _Not deployed yet — add the Streamlit Community Cloud URL here after deployment._
 
-An end-to-end beginner project that predicts a Bengaluru home's monthly advertised rent from its size, BHK, bathrooms, locality and listing characteristics. It includes a repeatable training script, a saved trained model, evaluation metrics and an interactive Streamlit app. The original CSV is kept out of Git because its source listing does not state a redistribution license; see [`data/README.md`](data/README.md) for how to obtain it for retraining.
+An end-to-end beginner project that estimates a Bengaluru home's rent from its size, BHK, bathrooms, locality and listing characteristics. It includes the 2022 property model and a separate October 2026 neighborhood benchmark. The original Kaggle CSV is kept out of Git because its source listing does not state a redistribution license; see [`data/README.md`](data/README.md) for provenance and retraining notes.
 
 ## What the project does
 
@@ -31,6 +31,12 @@ The app uses the included trained model and saved category choices; it does not 
 ## First training run
 
 The model was trained on 886 Bengaluru listings (708 train, 178 test) using a fixed 80/20 split. It scored **₹7,528 MAE**, **₹17,657 RMSE**, and **0.6665 R²** on that holdout. These results describe this historical sample; they do not guarantee accuracy on today's market. Re-run `python src\train.py` to reproduce the evaluation and model after downloading the CSV.
+
+## Why the app shows two numbers
+
+The property model predicts **₹17,222** for the 2 BHK, 1,000 sq ft Koramangala example because it learned from 2022 listings; the full Bengaluru test-set RMSE is about ₹17,657. The October 2026 index gives a **₹25,000** median paid rent for a Koramangala 2 BHK, based on 22 tenant reports in the latest 90-day window. The app shows both separately: the old model is property-feature-based, while the recent figure is a neighborhood/BHK median that ignores size, bathrooms and furnishing.
+
+The 2026 CSV contains 31 neighborhood/BHK aggregates, not individual property records. It is valuable for a fresh market reference but too small and too coarse to retrain the property model. A proper retrain needs recent individual rental records with rent date, BHK, area, locality, bathrooms, furnishing and rent, along with permission to reuse the data. For now, the app surfaces the current benchmark and clearly labels the 2022 model's age and uncertainty.
 
 ## Project layout
 
@@ -66,5 +72,5 @@ The deployed app uses the saved model; it does not need the raw CSV. Streamlit a
 
 ## Before presenting
 
-Run the app once and try a few combinations. Be ready to explain why data is split before fitting preprocessing, what MAE means in rupees, and why the estimate is only a prototype due to the dataset's age and size.
+Run the app once and try a few combinations. Be ready to explain why the current neighborhood benchmark is shown separately from the property-level prediction, why data is split before fitting preprocessing, and what MAE means in rupees.
 
