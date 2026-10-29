@@ -18,9 +18,15 @@ streamlit run app.py
 
 If `python` is not recognized, install Python from [python.org](https://www.python.org/downloads/windows/) and select **Add python.exe to PATH** during setup. Then reopen PowerShell.
 
+Run the calculation and filter checks with:
+
+```powershell
+python -m unittest discover -s tests -v
+```
+
 ## Dashboard and estimate logic
 
-The single dashboard view updates its KPI cards and charts together when locality and BHK change. Switch among locality rent bars, selected-locality period bars or a line chart, rent-change bars, and report-volume bars. For Koramangala 2 BHK, it also checks manually captured portal examples against size, area-measurement type and tolerance. It requires at least five comparable listings before showing a middle-half asking range; smaller samples are shown as individual evidence and are not called a reliable prediction.
+The single dashboard view updates its KPI cards and charts together when locality and BHK change. Forecast charts and the projected-rent KPI also respond to the selected year and growth assumption; 2029 is three compounded years from the 2026 baseline. Switch among forecast-by-locality, a 2026–2029 forecast chart, current rent bars, selected-locality period bars or a line chart, rent-change bars, and report-volume bars. For Koramangala 2 BHK, it also checks manually captured portal examples against size, area-measurement type and tolerance. It requires at least five comparable listings before showing a middle-half asking range; smaller samples are shown as individual evidence and are not called a reliable prediction.
 
 Future scenarios compound a selected annual rate through 2029. Options include September 2026 urban actual-rent inflation (2.22%), general urban CPI inflation (4.88%), a Bengaluru residential rent trend scenario (10.4% annualized from JLL's Q2 2026 quarter-over-quarter report), and a custom assumption. There is no agent markup. These are scenarios, not fitted forecasts.
 

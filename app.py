@@ -3,6 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 import streamlit as st
+from src.comparables import select_comparables
+from src.forecast import BASE_YEAR, FORECAST_YEARS, forecast_rent
 
 ROOT = Path(__file__).resolve().parent
 MARKET_DIR = ROOT / "data" / "market"
@@ -84,7 +86,7 @@ with st.sidebar:
     area_sqft = st.number_input("Property size (sq ft)", min_value=150, max_value=10000, value=1400, step=50)
     area_basis = st.selectbox("Area measurement", ["carpet", "super", "covered", "unknown / mixed"], format_func=lambda text: text.title() if text != "unknown / mixed" else "Unknown / mixed")
     size_tolerance = st.select_slider("Comparable size tolerance", options=[10, 15, 20, 25, 30, 40], value=25, format_func=lambda value: f"±{value}%")
-    target_year = st.selectbox("Estimate year", [2026, 2027, 2028, 2029], index=0)
+    target_year = st.selectbox("Estimate year", FORECAST_YEARS, index=0)
     growth_name = st.selectbox("Annual growth scenario", list(GROWTH_RATES))
     if growth_name == "Custom assumption":
         annual_rate = st.number_input("Annual growth (%)", min_value=-10.0, max_value=30.0, value=4.0, step=0.5)
@@ -94,6 +96,8 @@ with st.sidebar:
         growth_note = GROWTH_NOTES[growth_name]
 
     chart_type = st.selectbox("Chart view", [
+        "Forecast rent by locality · selected year",
+        "Forecast by year · selected locality",
         "Current rent by locality",
         "Selected locality · current vs previous (bar)",
         "Selected locality · rent trend (line)",
@@ -107,28 +111,22 @@ if selected_rows.empty:
     st.stop()
 selected = selected_rows.iloc[0]
 paid_base = float(selected["median_rent_inr_90d"])
-years_forward = target_year - 2026
-projected_paid = paid_base * (1 + float(annual_rate) / 100) ** years_forward
+years_forward = target_year - BASE_YEAR
+projected_paid = forecast_rent(paid_base, annual_rate, target_year)
 
 # Asking-listing comparables are intentionally limited to the locality/BHK for
 # which recent property-level examples were manually captured.
 comparable = pd.DataFrame()
 if {"bhk", *LISTING_REQUIRED}.issubset(listing_sample.columns) and locality == "Koramangala" and bhk == 2:
-    sample = listing_sample.copy()
-    for column in ("bhk", "rent_inr", "area_sqft", "bathrooms", "maintenance_inr"):
-        sample[column] = pd.to_numeric(sample[column], errors="coerce")
-    sample["area_basis"] = sample["area_basis"].fillna("unknown").astype(str).str.casefold()
     if area_basis == "unknown / mixed":
-        basis_rows = sample
         st.info("This includes carpet, super and covered area records together. Those measurements are not directly comparable; treat this sample as directional only.")
-    else:
-        basis_rows = sample.loc[sample["area_basis"] == area_basis]
-    comparable = basis_rows.loc[
-        (basis_rows["bhk"] == bhk)
-        & basis_rows["rent_inr"].notna()
-        & basis_rows["area_sqft"].notna()
-        & basis_rows["area_sqft"].between(area_sqft * (1 - size_tolerance / 100), area_sqft * (1 + size_tolerance / 100))
-    ].copy()
+    comparable = select_comparables(
+        listing_sample,
+        bhk=bhk,
+        area_sqft=area_sqft,
+        area_basis=area_basis,
+        size_tolerance_pct=size_tolerance,
+    )
 
 # Current market KPIs. Asking and paid-rent measures are never blended.
 st.subheader(f"{locality} · {bhk} BHK rent estimate")
@@ -138,7 +136,8 @@ prior_reports = int(selected["reports_prev_90d"]) if pd.notna(selected["reports_
 metric_row_1[0].metric("Latest reported paid median", f"{inr(paid_base)} / month", help=f"{latest_reports:,} tenant reports · 90 days ending 6 Oct 2026")
 change = selected["change_pct"]
 metric_row_1[1].metric("Change vs previous 90 days", f"{float(change):+.1f}%" if pd.notna(change) else "—", help="Change in the tenant-reported median between two 90-day windows")
-metric_row_1[2].metric(f"{target_year} paid-rent scenario", f"{inr(projected_paid)} / month", help=f"Base {inr(paid_base)} · {annual_rate:.2f}% annual assumption · {years_forward} years")
+forecast_delta_pct = ((projected_paid / paid_base) - 1) * 100 if paid_base else 0
+metric_row_1[2].metric(f"{target_year} projected monthly rent", f"{inr(projected_paid)} / month", f"{forecast_delta_pct:+.1f}% vs current", help=f"Base {inr(paid_base)} · {annual_rate:.2f}% annual assumption · {years_forward} years")
 
 metric_row_2 = st.columns(3)
 metric_row_2[0].metric("Previous 90-day median", f"{inr(selected['median_rent_inr_prev_90d'])} / month", help=f"{prior_reports:,} reports in the previous window" if prior_reports else "Previous-window report count unavailable")
@@ -172,6 +171,28 @@ with chart_col:
         chart_data["Selected locality"] = chart_data["Locality"].map(lambda name: "Selected" if name == locality else "Other")
         chart_data = chart_data.sort_values("Monthly rent (₹)", ascending=False)
         st.bar_chart(chart_data, x="Locality", y="Monthly rent (₹)", color="Selected locality", horizontal=True, sort="-Monthly rent (₹)")
+    elif chart_type == "Forecast rent by locality · selected year":
+        chart_data = bhk_rows[["area", "median_rent_inr_90d"]].rename(columns={"area": "Locality", "median_rent_inr_90d": "Current median (₹)"})
+        chart_data["Projected rent (₹)"] = chart_data["Current median (₹)"].map(lambda value: forecast_rent(value, annual_rate, target_year))
+        chart_data["Selected locality"] = chart_data["Locality"].map(lambda name: "Selected" if name == locality else "Other")
+        chart_data = chart_data.sort_values("Projected rent (₹)", ascending=False)
+        st.bar_chart(chart_data, x="Locality", y="Projected rent (₹)", color="Selected locality", horizontal=True, sort="-Projected rent (₹)")
+        st.caption(f"Each locality's current reported median is compounded by {annual_rate:.2f}% annually through {target_year}. Change the year or growth scenario to update every bar.")
+    elif chart_type == "Forecast by year · selected locality":
+        forecast_years = list(FORECAST_YEARS)
+        forecast_values = [forecast_rent(paid_base, annual_rate, year) for year in forecast_years]
+        trajectory = pd.DataFrame({
+            "Year": forecast_years,
+            "Projected rent (₹)": forecast_values,
+            "Target year": ["Selected" if year == target_year else "Other years" for year in forecast_years],
+        })
+        st.bar_chart(trajectory, x="Year", y="Projected rent (₹)", color="Target year")
+        st.caption(f"All four scenarios are shown. The highlighted bar is your selected target year ({target_year}); changing the year or growth assumption updates this chart and the KPI.")
+        st.dataframe(
+            trajectory[["Year", "Projected rent (₹)", "Target year"]].rename(columns={"Target year": "Selection"}),
+            hide_index=True,
+            width="stretch",
+        )
     elif chart_type in {"Selected locality · current vs previous (bar)", "Selected locality · rent trend (line)"}:
         chart_data = pd.DataFrame({
             "Period": ["Previous 90 days", "Latest 90 days"],
@@ -195,8 +216,8 @@ with chart_col:
 with chart_info:
     st.markdown("#### Reading this view")
     st.write(f"All market charts use {bhk} BHK records. **{locality}** is highlighted where the chart compares localities.")
-    st.write("Change the filters in the left panel. The estimate cards and chart refresh together.")
-    st.write("Current and previous values are separate 90-day windows; the chart is descriptive, not a time-series forecast.")
+    st.write("The selected year and annual growth assumption update the projected KPI and both forecast charts. Historical period charts remain fixed to observed 90-day data.")
+    st.write("The 2029 estimate compounds the 2026 baseline for three years: current median × (1 + annual rate)³.")
 
 if locality == "Koramangala" and bhk == 2:
     st.markdown("#### Listings close to this property")
