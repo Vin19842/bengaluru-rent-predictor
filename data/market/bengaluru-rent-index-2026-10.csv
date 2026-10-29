@@ -1,0 +1,33 @@
+edition,area,area_slug,bhk,median_rent_inr_90d,reports_90d,median_rent_inr_prev_90d,reports_prev_90d,change_pct
+2026-10,BTM Layout,btm-layout,1,16750,36,15750,78,6.3
+2026-10,BTM Layout,btm-layout,2,27000,43,29500,53,-8.5
+2026-10,Bellandur,bellandur,2,41000,28,42000,69,-2.4
+2026-10,Bellandur,bellandur,3,57000,17,69500,68,-18.0
+2026-10,CV Raman Nagar,cv-raman-nagar,1,20000,15,18000,29,11.1
+2026-10,CV Raman Nagar,cv-raman-nagar,2,32000,43,31000,57,3.2
+2026-10,Domlur,domlur,1,18700,27,20000,61,-6.5
+2026-10,Domlur,domlur,2,39000,34,37500,77,4.0
+2026-10,Electronic City,electronic-city,2,25000,17,32500,24,-23.1
+2026-10,Frazer Town,frazer-town,2,29000,18,35000,49,-17.1
+2026-10,HSR Layout,hsr-layout,1,21000,35,21500,111,-2.3
+2026-10,HSR Layout,hsr-layout,2,39000,53,37000,141,5.4
+2026-10,Hebbal,hebbal,2,18000,17,25000,8,
+2026-10,Indiranagar,indiranagar,1,19000,25,20500,60,-7.3
+2026-10,Indiranagar,indiranagar,2,39000,40,38000,83,2.6
+2026-10,JP Nagar,jp-nagar,1,11800,15,11000,18,7.3
+2026-10,JP Nagar,jp-nagar,2,25000,23,25000,35,0.0
+2026-10,KR Puram,kr-puram,1,15000,17,14000,12,
+2026-10,KR Puram,kr-puram,2,31500,20,23000,16,37.0
+2026-10,Kammanahalli,kammanahalli,2,26500,23,29000,36,-8.6
+2026-10,Koramangala,koramangala,1,18000,32,17500,70,2.9
+2026-10,Koramangala,koramangala,2,25000,22,35000,77,-28.6
+2026-10,Malleshwaram,malleshwaram,2,27150,16,25000,24,8.6
+2026-10,Marathahalli,marathahalli,1,17250,52,19500,88,-11.5
+2026-10,Marathahalli,marathahalli,2,30000,39,34000,65,-11.8
+2026-10,Marathahalli,marathahalli,3,56000,17,55000,36,1.8
+2026-10,Sarjapur Road,sarjapur-road,1,21000,15,21000,23,0.0
+2026-10,Sarjapur Road,sarjapur-road,2,35500,36,43000,67,-17.4
+2026-10,Sarjapur Road,sarjapur-road,3,63000,20,63000,58,0.0
+2026-10,Whitefield,whitefield,1,18250,22,18750,36,-2.7
+2026-10,Whitefield,whitefield,2,39000,22,33000,31,18.2
+
