@@ -3,7 +3,7 @@
 **Project on GitHub:** [Vin19842/bengaluru-rent-predictor](https://github.com/Vin19842/bengaluru-rent-predictor)  
 **Live app:** _Add the Streamlit Community Cloud URL after deployment._
 
-An educational Streamlit dashboard for exploring Bengaluru rents. It separates tenant-reported paid rent from asking prices, compares localities, shows current source/sample details, and offers transparent future-year scenarios. The old 2022 model is retained for learning but is no longer used for current predictions.
+An educational Streamlit dashboard for exploring Bengaluru rents. One filter-driven view combines the rent estimate and market overview: locality/BHK KPIs, selectable charts, size-matched Koramangala listing examples, and 2026–2029 scenarios. Tenant-reported paid rents remain separate from asking prices. The old 2022 model is retained for learning but is not used for current estimates.
 
 ## Run on Windows
 
@@ -20,7 +20,7 @@ If `python` is not recognized, install Python from [python.org](https://www.pyth
 
 ## Dashboard and estimate logic
 
-The dashboard has four views: locality trends, a rent estimate, a comparison of published data sources, and methodology/data quality. For Koramangala 2 BHK, it also checks manually captured portal examples against the user's size and area-measurement type. It requires at least five comparable listings before showing a middle-half asking range; smaller samples are shown as individual evidence and are not called a reliable prediction.
+The single dashboard view updates its KPI cards and charts together when locality and BHK change. Switch among locality rent bars, selected-locality period bars or a line chart, rent-change bars, and report-volume bars. For Koramangala 2 BHK, it also checks manually captured portal examples against size, area-measurement type and tolerance. It requires at least five comparable listings before showing a middle-half asking range; smaller samples are shown as individual evidence and are not called a reliable prediction.
 
 Future scenarios compound a selected annual rate through 2029. Options include September 2026 urban actual-rent inflation (2.22%), general urban CPI inflation (4.88%), a Bengaluru residential rent trend scenario (10.4% annualized from JLL's Q2 2026 quarter-over-quarter report), and a custom assumption. There is no agent markup. These are scenarios, not fitted forecasts.
 
