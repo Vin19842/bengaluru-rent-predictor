@@ -1,0 +1,8 @@
+source,measure,locality,bhk,low_inr,central_inr,high_inr,sample_count,observation_period,source_as_of,captured_on,source_url,interpretation
+Bengaluru Rent Index,tenant-reported paid median,Koramangala,2,,25000,,22,90 days ending 2026-10-06,2026-10-06,2026-10-29,https://bengaluru.rent/bengaluru-rent-index,Reported paid rent; not a current asking-price measure
+MyBharat Rent,tenant-reported paid quantiles,Koramangala,2,24000,33000,40000,41,180 days; latest report 2026-08-23,2026-08-23,2026-10-29,https://mybharat.rent/rent-in/bengaluru/koramangala/2-bhk-for-rent,Reported paid rent; p25 median p75; older last-report date
+Ghar4 Rent,asking median from posts,Koramangala,2,,33000,,8,Posts up to 45 days; 9 live posts,2026-10-28,2026-10-29,https://www.ghar4.rent/areas/koramangala-bengaluru/2-bhk,Only 8 posts disclosed rent; aggregates posts across multiple social and rental sources
+Magicbricks,portal asking range,Koramangala,2,32300,,110000,159+,Current search page; listing dates vary,2026-10-29,2026-10-29,https://www.magicbricks.com/2-bhk-flats-for-rent-in-koramangala-bangalore-pppfr,Broad page FAQ range; includes varied blocks sizes furnishings and property quality
+PropertiesNOW,portal asking range,Koramangala,2,26000,,42900,100,Portal band recalculated 2026-10-05,2026-10-05,2026-10-29,https://propertiesnow.in/bangalore/koramangala,Page reports a broader asking-price band; separate on-page own-listing median is materially different
+PropertiesNOW,own live listing median,Koramangala,2,,22500,,80,Live listings on page; band recalculated 2026-10-05,2026-10-05,2026-10-29,https://propertiesnow.in/bangalore/koramangala,Same page also reports another broader 100-listing band; preserve source disagreement rather than blend figures
+

@@ -3,7 +3,7 @@
 **Project on GitHub:** [Vin19842/bengaluru-rent-predictor](https://github.com/Vin19842/bengaluru-rent-predictor)  
 **Live app:** _Add the Streamlit Community Cloud URL after deployment._
 
-An educational project for exploring current neighborhood rent benchmarks and transparent future-year scenarios in Bengaluru. The current estimate is anchored to recent tenant-reported median rent by locality and BHK. A separate 2022 property-level model is retained for learning and comparison, but it is not used as today's estimate because its predictions were materially stale.
+An educational Streamlit dashboard for exploring Bengaluru rents. It separates tenant-reported paid rent from asking prices, compares localities, shows current source/sample details, and offers transparent future-year scenarios. The old 2022 model is retained for learning but is no longer used for current predictions.
 
 ## Run on Windows
 
@@ -18,26 +18,25 @@ streamlit run app.py
 
 If `python` is not recognized, install Python from [python.org](https://www.python.org/downloads/windows/) and select **Add python.exe to PATH** during setup. Then reopen PowerShell.
 
-## How the current estimate works
+## Dashboard and estimate logic
 
-1. Select a locality and BHK with a recent market-index row.
-2. The 2026 estimate starts from the area's reported median rent.
-3. For 2027–2029, the app compounds the selected annual growth assumption: `current median × (1 + growth rate)^years`.
-4. An optional agent-involved asking premium can be added as a user-controlled scenario. It defaults to 0%; it is not inferred from the data. One-time brokerage is normally separate from monthly rent.
+The dashboard has four views: locality trends, a rent estimate, a comparison of published data sources, and methodology/data quality. For Koramangala 2 BHK, it also checks manually captured portal examples against the user's size and area-measurement type. It requires at least five comparable listings before showing a middle-half asking range; smaller samples are shown as individual evidence and are not called a reliable prediction.
 
-Available growth assumptions include official September 2026 urban CPI actual rent inflation (2.22%), general urban CPI inflation (4.88%), a Bengaluru residential rent trend scenario (10.4% annualized from JLL's reported 2.5% Q2 2026 quarter-over-quarter rise), and a custom rate. These are scenario choices, not a fitted three-year forecast. Rent can move differently from CPI, and an annualized single quarter can overstate or understate future growth.
+Future scenarios compound a selected annual rate through 2029. Options include September 2026 urban actual-rent inflation (2.22%), general urban CPI inflation (4.88%), a Bengaluru residential rent trend scenario (10.4% annualized from JLL's Q2 2026 quarter-over-quarter report), and a custom assumption. There is no agent markup. These are scenarios, not fitted forecasts.
 
-The current index has locality/BHK-level medians, not individual listings with size, bathrooms, furnishing, building age, or amenities. The app displays area as reference only and does not adjust the benchmark for it. This is more honest than pretending the aggregate table can train a property-specific model. Low report counts also make a locality median less stable.
+Paid-rent reports, asking posts and portal asking prices have different populations. The app keeps them separate and displays sample sizes, dates and source links. A user's square footage only affects the small Koramangala listing comparison; the area/BHK paid-rent median is not adjusted by size.
 
 ## Why the old machine-learning estimate was wrong
 
 The original Random Forest learned from 886 Bengaluru listings posted in April–July 2022. On the screenshot example it predicted ₹17,222, while the October 2026 Koramangala 2 BHK tenant-reported median was ₹25,000. Its random-holdout MAE was ₹7,528, but that evaluation did not test today's market. The model remains in `models/` as a historical educational artifact and is not used for current app results.
 
-The recent index contains 31 aggregate rows, based on 2,220 tenant reports across neighborhoods. It is suitable for current area/BHK comparisons, but not for retraining the old property-level model. Do not manufacture synthetic property records and mix them into model training; that would create false accuracy. To build a stronger property model, collect permitted recent individual listing or signed-lease records with at least rent date, rent, BHK, floor area, locality, furnishing, bathrooms and listing/lease status. Evaluate with a time-based holdout and report locality-specific sample counts and errors.
+The current paid-rent index contains 31 locality/BHK aggregates from 2,220 renter reports. The manual portal snapshot has only 17 visible Koramangala 2 BHK examples. Neither is sufficient to retrain a multi-locality property model. Do not mix synthetic values or area-level medians into property-level training. A credible model needs many more recent, unique, permission-cleared listings or leases, plus a time-based evaluation set.
 
 ## Data and sources
 
 - Recent neighborhood medians: [Bengaluru Rent Index](https://bengaluru.rent/bengaluru-rent-index), October 2026 edition. It summarizes tenant-reported rents in the 90 days ending 6 October 2026 and permits reuse with attribution. Details and limits: [`data/README.md`](data/README.md).
+- Koramangala asking price examples and source summaries: see `data/market/koramangala-asking-listings-2026-10.csv` and `data/market/koramangala-source-snapshots-2026-10.csv`. They are dated research snapshots, not verified lease outcomes or a production crawler feed.
+- Additional current local references: [MyBharat Rent](https://mybharat.rent/rent-in/bengaluru/koramangala/2-bhk-for-rent), [Ghar4 Rent](https://www.ghar4.rent/areas/koramangala-bengaluru/2-bhk), and [Magicbricks listings](https://www.magicbricks.com/2-bhk-flats-for-rent-in-koramangala-bangalore-pppfr).
 - Inflation assumptions: [MoSPI/PIB CPI release for September 2026](https://www.pib.gov.in/PressReleasePage.aspx?PRID=2322244&lang=1&reg=3). It reports 4.88% year-over-year urban general CPI inflation and 2.22% for actual urban rental payments.
 - Bengaluru rent trend scenario: [JLL Bengaluru Residential Market Dynamics Q2 2026](https://www.jll.com/en-in/insights/market-dynamics/bengaluru-residential), which reports rents rose 2.5% quarter over quarter in Q2 2026.
 - Historical training dataset: [Kaggle House Rent Prediction Dataset](https://www.kaggle.com/datasets/iamsouravbanerjee/house-rent-prediction-dataset), attributed to Sourav Banerjee. It is not included in Git because redistribution terms were not established. See `data/README.md` before downloading or reusing it.
@@ -50,8 +49,8 @@ The recent index contains 31 aggregate rows, based on 2,220 tenant reports acros
 
 ## Explaining it to a mentor
 
-- **Current output:** observed neighborhood/BHK median from a recent tenant-report index.
+- **Current output:** separate paid-rent benchmarks, asking-source ranges and (for one locality/configuration) a small comparable-listing sample.
 - **Future output:** explicit compounding scenario with a selectable rate, not a machine-learning forecast.
-- **Why no retraining:** new data is aggregated by locality and BHK, without property-level features or labels.
+- **Why no retraining:** the current observations are too small, too narrow and partly aggregated to support a reliable property-level model.
 - **Next data milestone:** licensed, recent, property-level rent observations and a chronological evaluation split.
 
