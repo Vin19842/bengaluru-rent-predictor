@@ -1,7 +1,7 @@
 # Bengaluru Rent Estimator
 
 **Project on GitHub:** [Vin19842/bengaluru-rent-predictor](https://github.com/Vin19842/bengaluru-rent-predictor)  
-**Live app:** _Add the Streamlit Community Cloud URL after deployment._
+**Live app:** :https://bengaluru-rent-dashboard.streamlit.app/
 
 An educational Streamlit dashboard for exploring Bengaluru rents. One filter-driven view combines the rent estimate and market overview: locality/BHK KPIs, selectable charts, size-matched Koramangala listing examples, and 2026–2029 scenarios. Tenant-reported paid rents remain separate from asking prices. The old 2022 model is retained for learning but is not used for current estimates.
 
@@ -47,16 +47,4 @@ The current paid-rent index contains 31 locality/BHK aggregates from 2,220 rente
 - Bengaluru rent trend scenario: [JLL Bengaluru Residential Market Dynamics Q2 2026](https://www.jll.com/en-in/insights/market-dynamics/bengaluru-residential), which reports rents rose 2.5% quarter over quarter in Q2 2026.
 - Historical training dataset: [Kaggle House Rent Prediction Dataset](https://www.kaggle.com/datasets/iamsouravbanerjee/house-rent-prediction-dataset), attributed to Sourav Banerjee. It is not included in Git because redistribution terms were not established. See `data/README.md` before downloading or reusing it.
 
-## Deploy a shareable app
-
-1. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/) with GitHub.
-2. Choose **Create app**, this repository, the `main` branch and `app.py`.
-3. Deploy, then copy the generated `streamlit.app` URL into the **Live app** line above. Future commits to `main` can update the deployed app automatically.
-
-## Explaining it to a mentor
-
-- **Current output:** separate paid-rent benchmarks, asking-source ranges and (for one locality/configuration) a small comparable-listing sample.
-- **Future output:** explicit compounding scenario with a selectable rate, not a machine-learning forecast.
-- **Why no retraining:** the current observations are too small, too narrow and partly aggregated to support a reliable property-level model.
-- **Next data milestone:** licensed, recent, property-level rent observations and a chronological evaluation split.
 
