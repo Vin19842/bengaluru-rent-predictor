@@ -1,0 +1,20 @@
+{
+  "city": "Bengaluru (source labels this city Bangalore)",
+  "dataset_rows_after_cleaning": 886,
+  "train_rows": 708,
+  "test_rows": 178,
+  "test_mae_inr": 7528.34,
+  "test_rmse_inr": 17656.6,
+  "test_r2": 0.6665,
+  "split": "80/20 random holdout, random_state=42",
+  "model": "RandomForestRegressor (400 trees; log1p target)",
+  "features": [
+    "BHK",
+    "Size",
+    "Bathroom",
+    "Area Type",
+    "Area Locality",
+    "Furnishing Status",
+    "Tenant Preferred"
+  ]
+}
