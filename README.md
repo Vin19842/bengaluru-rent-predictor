@@ -13,7 +13,7 @@ An end-to-end beginner project that predicts a Bengaluru home's monthly advertis
 5. Reports MAE, RMSE and R² on the held-out test set.
 6. Serves a form where a user enters home details and receives an estimate in rupees.
 
-## Run it on Windows
+## Run the included model on Windows
 
 Open PowerShell in this folder and run:
 
@@ -21,23 +21,21 @@ Open PowerShell in this folder and run:
 py -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -r requirements.txt
-python src\train.py
 streamlit run app.py
 ```
 
-The included trained model and saved category choices let the app run without the original CSV. To retrain, first download the CSV as described in [`data/README.md`](data/README.md). After training, see `models/metrics.json` for the evaluation and `models/bengaluru_rent_model.joblib` for the trained pipeline.
+The app uses the included trained model and saved category choices; it does not need the original CSV. To train again, download the CSV as described in [`data/README.md`](data/README.md), save it as `data/raw/House_Rent_Dataset.csv`, then run `python src/train.py`.
 
 ## First training run
 
-Using the included data and the fixed 80/20 split, the training script kept 886 Bengaluru listings (708 train, 178 test). The saved run scored **₹7,528 MAE**, **₹17,657 RMSE**, and **0.6665 R²** on that holdout. These are reproducibility results for this historical sample; they do not guarantee accuracy on today's market. Re-run `python src\train.py` to reproduce the evaluation and model with the pinned scikit-learn version.
+The model was trained on 886 Bengaluru listings (708 train, 178 test) using a fixed 80/20 split. It scored **₹7,528 MAE**, **₹17,657 RMSE**, and **0.6665 R²** on that holdout. These results describe this historical sample; they do not guarantee accuracy on today's market. Re-run `python src\train.py` to reproduce the evaluation and model after downloading the CSV.
 
 ## Project layout
 
 ```text
 app.py                         Interactive prediction form
 src/train.py                   Cleaning, training and evaluation
-data/raw/House_Rent_Dataset.csv Source listings
-data/README.md                 Provenance and use limitations
+data/README.md                 Data source and download notes
 models/                        Saved model and holdout metrics
 ```
 
